@@ -6,6 +6,7 @@ import { fetchWithAuth, isAuthenticated } from '@/lib/authClient';
 import Navbar from '@/components/Navbar';
 import TicketCard from '@/components/TicketCard';
 import Modal from '@/components/Modal';
+import KanbanBoard from '@/components/KanbanBoard';
 
 export default function ProjectDetailPage() {
   const router = useRouter();
@@ -32,6 +33,7 @@ export default function ProjectDetailPage() {
     assignedTo: []
   });
   const [memberEmail, setMemberEmail] = useState('');
+  const [viewMode, setViewMode] = useState('kanban');
 
   useEffect(() => {
     if (!isAuthenticated()) {
@@ -245,39 +247,71 @@ return (
       </div>
     </div>
 
-    {/* Tickets */}
+<div className="flex justify-between items-center">
+        {/* Tickets */}
     <div className="mb-6 flex justify-between items-center">
       <h2 className="text-2xl font-bold text-gray-900">
         Tickets ({tickets.length})
       </h2>
+    </div>
+              <div className="mb-6 flex justify-between items-center">
+
+  <div className="flex gap-4 ">
+    {/* Toggle */}
+    <div className="flex bg-gray-200 rounded-lg p-1">
       <button
-        onClick={() => setShowTicketModal(true)}
-        className="px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition"
+        onClick={() => setViewMode('list')}
+        className={`px-4 py-2 rounded-md text-sm font-medium transition ${
+          viewMode === 'list'
+            ? 'bg-white text-gray-900 shadow'
+            : 'text-gray-600 hover:text-gray-900'
+        }`}
       >
-        + Nouveau ticket
+        📋 Liste
+      </button>
+
+      <button
+        onClick={() => setViewMode('kanban')}
+        className={`px-4 py-2 rounded-md text-sm font-medium transition ${
+          viewMode === 'kanban'
+            ? 'bg-white text-gray-900 shadow'
+            : 'text-gray-600 hover:text-gray-900'
+        }`}
+      >
+        🧩 Kanban
       </button>
     </div>
 
-    {/* Board Kanban */}
-    <div className="grid md:grid-cols-4 gap-6">
-      {Object.entries(ticketsByStatus).map(([status, statusTickets]) => (
-        <div key={status} className="bg-white rounded-xl shadow p-4">
-          <h3 className="font-bold text-gray-900 mb-4">
-            {status} ({statusTickets.length})
-          </h3>
-          <div className="space-y-3">
-            {statusTickets.map(ticket => (
-              <TicketCard key={ticket._id} ticket={ticket} showProject={false} />
-            ))}
-            {statusTickets.length === 0 && (
-              <p className="text-gray-400 text-sm text-center py-8">
-                Aucun ticket
-              </p>
-            )}
-          </div>
-        </div>
-      ))}
-    </div>
+    <button
+      onClick={() => setShowTicketModal(true)}
+      className="px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition"
+    >
+      + Nouveau ticket
+    </button>
+  </div>
+</div>
+</div>
+    {/* Board Kanban avec Drag & Drop  */}
+    {viewMode === 'kanban' ? (
+  <KanbanBoard tickets={tickets} onTicketUpdate={loadData} />
+) : (
+  <div className="space-y-4">
+    {tickets.length === 0 && (
+      <div className="text-center py-12 text-gray-400">
+        Aucun ticket
+      </div>
+    )}
+
+    {tickets.map(ticket => (
+      <TicketCard
+        key={ticket._id}
+        ticket={ticket}
+        onUpdate={loadData}
+      />
+    ))}
+  </div>
+)}
+
   </div>
 
   {/* Modal Modifier Projet */}

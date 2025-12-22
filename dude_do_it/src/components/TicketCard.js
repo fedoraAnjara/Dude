@@ -41,11 +41,11 @@ export default function TicketCard({ ticket, showProject = true }) {
         <div className="flex items-center gap-3">
           {showProject && ticket.project && (
             <span className="text-indigo-600 font-medium">
-              📦 {ticket.project.name}
+              {ticket.project.name}
             </span>
           )}
           <span className="text-gray-500">
-            📅 {formatDate(ticket.estimatedDate)}
+            {formatDate(ticket.estimatedDate)}
           </span>
         </div>
         
