@@ -1,0 +1,421 @@
+{
+  "clientName": "Thunder Client",
+  "collectionName": "Dude Do It - API Tests",
+  "collectionId": "dude-do-it-api",
+  "dateExported": "2024-12-22",
+  "version": "1.0",
+  "folders": [
+    {
+      "name": "1. Authentication",
+      "requests": []
+    },
+    {
+      "name": "2. Projects",
+      "requests": []
+    },
+    {
+      "name": "3. Tickets",
+      "requests": []
+    },
+    {
+      "name": "4. Comments",
+      "requests": []
+    },
+    {
+      "name": "5. Members Management",
+      "requests": []
+    }
+  ],
+  "requests": [
+    {
+      "name": "1.1 - Register User",
+      "method": "POST",
+      "url": "http://localhost:3000/api/auth/register",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"firstName\": \"Jean\",\n  \"lastName\": \"Rakoto\",\n  \"email\": \"jean.rakoto@test.mg\",\n  \"phone\": \"+261340123456\",\n  \"password\": \"password123\"\n}"
+      },
+      "tests": []
+    },
+    {
+      "name": "1.2 - Register Second User",
+      "method": "POST",
+      "url": "http://localhost:3000/api/auth/register",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"firstName\": \"Marie\",\n  \"lastName\": \"Razafy\",\n  \"email\": \"marie.razafy@test.mg\",\n  \"phone\": \"+261340987654\",\n  \"password\": \"password123\"\n}"
+      }
+    },
+    {
+      "name": "1.3 - Login",
+      "method": "POST",
+      "url": "http://localhost:3000/api/auth/login",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"email\": \"jean.rakoto@test.mg\",\n  \"password\": \"password123\"\n}"
+      }
+    },
+    {
+      "name": "1.4 - Get My Profile",
+      "method": "GET",
+      "url": "http://localhost:3000/api/auth/me",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer YOUR_TOKEN_HERE"
+        }
+      ]
+    },
+    {
+      "name": "1.5 - Update Profile",
+      "method": "PUT",
+      "url": "http://localhost:3000/api/auth/me",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer YOUR_TOKEN_HERE"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"firstName\": \"Jean Paul\",\n  \"lastName\": \"Rakoto\",\n  \"phone\": \"+261340111111\"\n}"
+      }
+    },
+    {
+      "name": "2.1 - Create Project",
+      "method": "POST",
+      "url": "http://localhost:3000/api/projects",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer YOUR_TOKEN_HERE"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"name\": \"Site Web E-commerce\",\n  \"description\": \"Développement d'un site e-commerce pour la vente de produits locaux\",\n  \"status\": \"Actif\"\n}"
+      }
+    },
+    {
+      "name": "2.2 - Get All Projects",
+      "method": "GET",
+      "url": "http://localhost:3000/api/projects",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer YOUR_TOKEN_HERE"
+        }
+      ]
+    },
+    {
+      "name": "2.3 - Get Project by ID",
+      "method": "GET",
+      "url": "http://localhost:3000/api/projects/PROJECT_ID_HERE",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer YOUR_TOKEN_HERE"
+        }
+      ]
+    },
+    {
+      "name": "2.4 - Update Project",
+      "method": "PUT",
+      "url": "http://localhost:3000/api/projects/PROJECT_ID_HERE",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer YOUR_TOKEN_HERE"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"name\": \"Site Web E-commerce V2\",\n  \"description\": \"Version améliorée avec paiement mobile\",\n  \"status\": \"Actif\"\n}"
+      }
+    },
+    {
+      "name": "2.5 - Delete Project",
+      "method": "DELETE",
+      "url": "http://localhost:3000/api/projects/PROJECT_ID_HERE",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer YOUR_TOKEN_HERE"
+        }
+      ]
+    },
+    {
+      "name": "3.1 - Create Ticket",
+      "method": "POST",
+      "url": "http://localhost:3000/api/tickets",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer YOUR_TOKEN_HERE"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"title\": \"Créer la page d'accueil\",\n  \"description\": \"Design et intégration de la page d'accueil avec slider et produits en vedette\",\n  \"status\": \"À faire\",\n  \"estimatedDate\": \"2025-01-15\",\n  \"project\": \"PROJECT_ID_HERE\",\n  \"assignedTo\": []\n}"
+      }
+    },
+    {
+      "name": "3.2 - Get All Tickets",
+      "method": "GET",
+      "url": "http://localhost:3000/api/tickets",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer YOUR_TOKEN_HERE"
+        }
+      ]
+    },
+    {
+      "name": "3.3 - Get Tickets by Project",
+      "method": "GET",
+      "url": "http://localhost:3000/api/tickets?project=PROJECT_ID_HERE",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer YOUR_TOKEN_HERE"
+        }
+      ]
+    },
+    {
+      "name": "3.4 - Get Tickets by Status",
+      "method": "GET",
+      "url": "http://localhost:3000/api/tickets?status=En cours",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer YOUR_TOKEN_HERE"
+        }
+      ]
+    },
+    {
+      "name": "3.5 - Get Ticket by ID",
+      "method": "GET",
+      "url": "http://localhost:3000/api/tickets/TICKET_ID_HERE",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer YOUR_TOKEN_HERE"
+        }
+      ]
+    },
+    {
+      "name": "3.6 - Update Ticket",
+      "method": "PUT",
+      "url": "http://localhost:3000/api/tickets/TICKET_ID_HERE",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer YOUR_TOKEN_HERE"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"title\": \"Créer la page d'accueil (mise à jour)\",\n  \"status\": \"En cours\",\n  \"assignedTo\": [\"USER_ID_HERE\"]\n}"
+      }
+    },
+    {
+      "name": "3.7 - Delete Ticket",
+      "method": "DELETE",
+      "url": "http://localhost:3000/api/tickets/TICKET_ID_HERE",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer YOUR_TOKEN_HERE"
+        }
+      ]
+    },
+    {
+      "name": "4.1 - Create Comment",
+      "method": "POST",
+      "url": "http://localhost:3000/api/comments",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer YOUR_TOKEN_HERE"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"content\": \"J'ai commencé à travailler sur le design. Je vais utiliser Tailwind CSS.\",\n  \"ticket\": \"TICKET_ID_HERE\"\n}"
+      }
+    },
+    {
+      "name": "4.2 - Get Comments by Ticket",
+      "method": "GET",
+      "url": "http://localhost:3000/api/tickets/TICKET_ID_HERE/comments",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer YOUR_TOKEN_HERE"
+        }
+      ]
+    },
+    {
+      "name": "4.3 - Update Comment",
+      "method": "PUT",
+      "url": "http://localhost:3000/api/comments/COMMENT_ID_HERE",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer YOUR_TOKEN_HERE"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"content\": \"Finalement j'utilise aussi Framer Motion pour les animations.\"\n}"
+      }
+    },
+    {
+      "name": "4.4 - Delete Comment",
+      "method": "DELETE",
+      "url": "http://localhost:3000/api/comments/COMMENT_ID_HERE",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer YOUR_TOKEN_HERE"
+        }
+      ]
+    },
+    {
+      "name": "5.1 - Get All Members",
+      "method": "GET",
+      "url": "http://localhost:3000/api/projects/PROJECT_ID_HERE/members",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer YOUR_TOKEN_HERE"
+        }
+      ]
+    },
+    {
+      "name": "5.2 - Add Administrator",
+      "method": "POST",
+      "url": "http://localhost:3000/api/projects/PROJECT_ID_HERE/administrators",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer YOUR_TOKEN_HERE"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"userEmail\": \"marie.razafy@test.mg\"\n}"
+      }
+    },
+    {
+      "name": "5.3 - Remove Administrator",
+      "method": "DELETE",
+      "url": "http://localhost:3000/api/projects/PROJECT_ID_HERE/administrators?adminId=USER_ID_HERE",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer YOUR_TOKEN_HERE"
+        }
+      ]
+    },
+    {
+      "name": "5.4 - Add Team Member",
+      "method": "POST",
+      "url": "http://localhost:3000/api/projects/PROJECT_ID_HERE/team",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer YOUR_TOKEN_HERE"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"userEmail\": \"marie.razafy@test.mg\"\n}"
+      }
+    },
+    {
+      "name": "5.5 - Remove Team Member",
+      "method": "DELETE",
+      "url": "http://localhost:3000/api/projects/PROJECT_ID_HERE/team?memberId=USER_ID_HERE",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer YOUR_TOKEN_HERE"
+        }
+      ]
+    },
+    {
+      "name": "5.6 - Change Member Role",
+      "method": "PUT",
+      "url": "http://localhost:3000/api/projects/PROJECT_ID_HERE/members/role",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer YOUR_TOKEN_HERE"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"memberId\": \"USER_ID_HERE\",\n  \"newRole\": \"administrator\"\n}"
+      }
+    }
+  ]
+}
