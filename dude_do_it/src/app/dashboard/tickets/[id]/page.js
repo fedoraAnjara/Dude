@@ -17,24 +17,28 @@ export default function TicketDetailPage() {
   const [loading, setLoading] = useState(true);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editForm, setEditForm] = useState({});
+  const [viewMode, setViewMode] = useState('default'); // État manquant ajouté
 
+  // ✅ Premier useEffect : Vérification auth et chargement données
   useEffect(() => {
     if (!isAuthenticated()) {
       router.push('/login');
       return;
     }
 
-    useEffect(() => {
-    const saved = localStorage.getItem('ticketView');
-    if (saved) setViewMode(saved);
-    }, []);
-
-    useEffect(() => {
-    localStorage.setItem('ticketView', viewMode);
-    }, [viewMode]);
-
     loadData();
   }, [ticketId, router]);
+
+  // ✅ Deuxième useEffect : Charger le viewMode depuis localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('ticketView');
+    if (saved) setViewMode(saved);
+  }, []);
+
+  // ✅ Troisième useEffect : Sauvegarder le viewMode dans localStorage
+  useEffect(() => {
+    localStorage.setItem('ticketView', viewMode);
+  }, [viewMode]);
 
   const loadData = async () => {
     try {
@@ -156,7 +160,7 @@ export default function TicketDetailPage() {
   };
 
   const isCreator = ticket.creator._id === user?.id;
-  const canEdit = isCreator; // On peut étendre pour inclure les admins du projet
+  const canEdit = isCreator;
 
   return (
     <div className="min-h-screen bg-gray-50">
