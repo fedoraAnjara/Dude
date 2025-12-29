@@ -103,6 +103,12 @@ export default function Login() {
             focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               placeholder="••••••••"
             />
+            <Link
+              href="/forgot-password"
+              className="text-xs text-indigo-600 hover:text-indigo-700"
+            >
+              Mot de passe oublié ?
+            </Link>
           </div>
 
           <button

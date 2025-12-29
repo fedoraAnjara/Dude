@@ -111,7 +111,7 @@ export default function CommentSection({ ticketId, currentUserId }) {
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
           placeholder="Ajouter un commentaire..."
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+          className="text-gray-900 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
           rows="3"
         />
         <button
@@ -168,7 +168,7 @@ export default function CommentSection({ ticketId, currentUserId }) {
                   <textarea
                     value={editContent}
                     onChange={(e) => setEditContent(e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
+                    className="text-gray-900 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
                     rows="3"
                   />
                   <div className="flex gap-2">

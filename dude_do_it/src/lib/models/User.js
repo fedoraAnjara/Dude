@@ -29,6 +29,13 @@ const UserSchema = new mongoose.Schema({
     required: [true, 'Le mot de passe est obligatoire'],
     minlength: [6, 'Le mot de passe doit contenir au moins 6 caractères']
   },
+  //Champs pour la récupération de mot de passe
+  resetPasswordToken: { 
+    type: String 
+  },
+  resetPasswordExpires: { 
+    type: Date 
+  },
   createdAt: { 
     type: Date, 
     default: Date.now 
@@ -38,8 +45,7 @@ const UserSchema = new mongoose.Schema({
     default: Date.now 
   }
 }, {
-  timestamps: true // Ajoute automatiquement createdAt et updatedAt
+  timestamps: true
 });
 
-// Éviter la recréation du modèle en hot-reload
 export default mongoose.models.User || mongoose.model('User', UserSchema);
