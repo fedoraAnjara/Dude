@@ -40,7 +40,7 @@ export async function POST(request) {
     
     // Sauvegarder le token et sa date d'expiration (1 heure)
     user.resetPasswordToken = hashedToken;
-    user.resetPasswordExpires = Date.now() + 3600000; // 1 heure
+    user.resetPasswordExpires = Date.now() + 5 * 60 * 1000; // 5mn
     await user.save();
     
     // Envoyer l'email
