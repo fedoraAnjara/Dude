@@ -37,25 +37,41 @@ export default function TicketCard({ ticket, showProject = true }) {
       
       <p className="text-sm text-gray-600 mb-3 line-clamp-2">{ticket.description}</p>
       
-      <div className="flex items-center justify-between text-sm">
+      <div className="flex items-center justify-between text-sm mb-3">
         <div className="flex items-center gap-3">
           {showProject && ticket.project && (
             <span className="text-indigo-600 font-medium">
-              {ticket.project.name}
+              📦 {ticket.project.name}
             </span>
           )}
           <span className="text-gray-500">
-            {formatDate(ticket.estimatedDate)}
+            📅 {formatDate(ticket.estimatedDate)}
           </span>
         </div>
-        
-        {ticket.assignedTo && ticket.assignedTo.length > 0 && (
-          <div className="flex items-center gap-1">
-            <span className="text-gray-500">👤</span>
-            <span className="text-gray-700">{ticket.assignedTo.length}</span>
-          </div>
-        )}
       </div>
+
+      {/*Affichage des assignés */}
+      {ticket.assignedTo && ticket.assignedTo.length > 0 && (
+        <div className="flex items-center gap-2 pt-3 border-t border-gray-100">
+          <span className="text-xs text-gray-500">Assigné à:</span>
+          <div className="flex -space-x-2">
+            {ticket.assignedTo.slice(0, 3).map((person) => (
+              <div
+                key={person._id}
+                className="w-7 h-7 bg-indigo-600 rounded-full flex items-center justify-center text-white text-xs font-semibold border-2 border-white"
+                title={`${person.firstName} ${person.lastName}`}
+              >
+                {person.firstName[0]}{person.lastName[0]}
+              </div>
+            ))}
+            {ticket.assignedTo.length > 3 && (
+              <div className="w-7 h-7 bg-gray-400 rounded-full flex items-center justify-center text-white text-xs font-semibold border-2 border-white">
+                +{ticket.assignedTo.length - 3}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

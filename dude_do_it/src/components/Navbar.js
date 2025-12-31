@@ -42,9 +42,19 @@ export default function Navbar({ user }) {
 
             {user && (
               <div className="flex items-center gap-4">
-                <span className="text-sm text-gray-600">
-                  {user.firstName} {user.lastName}
-                </span>
+                {/* NOUVEAU : Lien vers le profil */}
+                <Link
+                  href="/dashboard/profile"
+                  className="flex items-center gap-2 text-gray-700 hover:text-indigo-600 transition"
+                >
+                  <div className="w-8 h-8 bg-indigo-600 rounded-full flex items-center justify-center text-white text-sm font-semibold">
+                    {user.firstName[0]}{user.lastName[0]}
+                  </div>
+                  <span className="text-sm font-medium">
+                    {user.firstName} {user.lastName}
+                  </span>
+                </Link>
+                
                 <button
                   onClick={handleLogout}
                   className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"

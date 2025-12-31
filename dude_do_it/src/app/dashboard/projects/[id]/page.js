@@ -381,86 +381,138 @@ return (
   </Modal>
 
   {/* Modal Créer Ticket */}
-  <Modal
-    isOpen={showTicketModal}
-    onClose={() => setShowTicketModal(false)}
-    title="Nouveau ticket"
-  >
-    <form onSubmit={handleCreateTicket} className="space-y-4">
+<Modal
+  isOpen={showTicketModal}
+  onClose={() => setShowTicketModal(false)}
+  title="Nouveau ticket"
+>
+  <form onSubmit={handleCreateTicket} className="space-y-4">
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-2">
+        Titre
+      </label>
+      <input
+        type="text"
+        value={ticketForm.title}
+        onChange={(e) => setTicketForm({ ...ticketForm, title: e.target.value })}
+        className="text-gray-900 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+        required
+      />
+    </div>
+
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-2">
+        Description
+      </label>
+      <textarea
+        value={ticketForm.description}
+        onChange={(e) => setTicketForm({ ...ticketForm, description: e.target.value })}
+        className="text-gray-900 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 resize-none"
+        rows="4"
+        required
+      />
+    </div>
+
+    <div className="grid grid-cols-2 gap-4">
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Titre
+          Statut
+        </label>
+        <select
+          value={ticketForm.status}
+          onChange={(e) => setTicketForm({ ...ticketForm, status: e.target.value })}
+          className="text-gray-900 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+        >
+          <option value="À faire">À faire</option>
+          <option value="En cours">En cours</option>
+          <option value="En validation">En validation</option>
+          <option value="Terminé">Terminé</option>
+        </select>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Date d'estimation
         </label>
         <input
-          type="text"
-          value={ticketForm.title}
-          onChange={(e) => setTicketForm({ ...ticketForm, title: e.target.value })}
+          type="date"
+          value={ticketForm.estimatedDate}
+          onChange={(e) => setTicketForm({ ...ticketForm, estimatedDate: e.target.value })}
           className="text-gray-900 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
           required
         />
       </div>
+    </div>
 
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-2">
-          Description
-        </label>
-        <textarea
-          value={ticketForm.description}
-          onChange={(e) => setTicketForm({ ...ticketForm, description: e.target.value })}
-          className="text-gray-900 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 resize-none"
-          rows="4"
-          required
-        />
+    {/*Sélection des assignés */}
+    <div>
+      <label className="block text-sm font-medium text-gray-700 mb-2">
+        Assigner à (optionnel)
+      </label>
+      <div className="border border-gray-300 rounded-lg p-3 max-h-48 overflow-y-auto space-y-2">
+        {[
+          ...(project.owner ? [{ ...project.owner, role: 'owner' }] : []),
+          ...(project.administrators || []).map(a => ({ ...a, role: 'admin' })),
+          ...(project.team || []).map(t => ({ ...t, role: 'team' }))
+        ].map((member) => {
+          const isSelected = ticketForm.assignedTo.includes(member._id);
+          
+          return (
+            <label
+              key={member._id}
+              className={`flex items-center gap-3 p-2 rounded cursor-pointer transition ${
+                isSelected ? 'bg-indigo-50' : 'hover:bg-gray-50'
+              }`}
+            >
+              <input
+                type="checkbox"
+                checked={isSelected}
+                onChange={(e) => {
+                  if (e.target.checked) {
+                    setTicketForm({
+                      ...ticketForm,
+                      assignedTo: [...ticketForm.assignedTo, member._id]
+                    });
+                  } else {
+                    setTicketForm({
+                      ...ticketForm,
+                      assignedTo: ticketForm.assignedTo.filter(id => id !== member._id)
+                    });
+                  }
+                }}
+                className="w-4 h-4 text-indigo-600 rounded focus:ring-indigo-500"
+              />
+              <span className="text-sm text-gray-900">
+                {member.firstName} {member.lastName}
+                {member.role === 'owner' && (
+                  <span className="ml-2 text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded">
+                    Propriétaire
+                  </span>
+                )}
+              </span>
+            </label>
+          );
+        })}
       </div>
+    </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Statut
-          </label>
-          <select
-            value={ticketForm.status}
-            onChange={(e) => setTicketForm({ ...ticketForm, status: e.target.value })}
-            className="text-gray-900 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
-          >
-            <option value="À faire">À faire</option>
-            <option value="En cours">En cours</option>
-            <option value="En validation">En validation</option>
-            <option value="Terminé">Terminé</option>
-          </select>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-2">
-            Date d'estimation
-          </label>
-          <input
-            type="date"
-            value={ticketForm.estimatedDate}
-            onChange={(e) => setTicketForm({ ...ticketForm, estimatedDate: e.target.value })}
-            className="text-gray-900 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
-            required
-          />
-        </div>
-      </div>
-
-      <div className="flex gap-3">
-        <button
-          type="submit"
-          className="flex-1 bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition"
-        >
-          Créer le ticket
-        </button>
-        <button
-          type="button"
-          onClick={() => setShowTicketModal(false)}
-          className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
-        >
-          Annuler
-        </button>
-      </div>
-    </form>
-  </Modal>
+    <div className="flex gap-3">
+      <button
+        type="submit"
+        className="flex-1 bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition"
+      >
+        Créer le ticket
+      </button>
+      <button
+        type="button"
+        onClick={() => setShowTicketModal(false)}
+        className="px-6 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition"
+      >
+        Annuler
+      </button>
+    </div>
+  </form>
+</Modal>
 
   {/* Modal Membres */}
   <Modal

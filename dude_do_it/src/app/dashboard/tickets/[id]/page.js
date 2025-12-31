@@ -16,10 +16,10 @@ export default function TicketDetailPage() {
   const [ticket, setTicket] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showAssignModal, setShowAssignModal] = useState(false);
+  const [projectMembers, setProjectMembers] = useState([]);
   const [editForm, setEditForm] = useState({});
-  const [viewMode, setViewMode] = useState('default'); // État manquant ajouté
 
-  // ✅ Premier useEffect : Vérification auth et chargement données
   useEffect(() => {
     if (!isAuthenticated()) {
       router.push('/login');
@@ -28,17 +28,6 @@ export default function TicketDetailPage() {
 
     loadData();
   }, [ticketId, router]);
-
-  // ✅ Deuxième useEffect : Charger le viewMode depuis localStorage
-  useEffect(() => {
-    const saved = localStorage.getItem('ticketView');
-    if (saved) setViewMode(saved);
-  }, []);
-
-  // ✅ Troisième useEffect : Sauvegarder le viewMode dans localStorage
-  useEffect(() => {
-    localStorage.setItem('ticketView', viewMode);
-  }, [viewMode]);
 
   const loadData = async () => {
     try {
@@ -58,6 +47,15 @@ export default function TicketDetailPage() {
           status: ticketData.ticket.status,
           estimatedDate: ticketData.ticket.estimatedDate.split('T')[0],
         });
+
+        //Charger les membres du projet
+        const membersRes = await fetchWithAuth(
+          `/api/projects/${ticketData.ticket.project._id}/members`
+        );
+        const membersData = await membersRes.json();
+        if (membersData.success) {
+          setProjectMembers(membersData.members);
+        }
       }
     } catch (error) {
       console.error('Erreur chargement:', error);
@@ -117,6 +115,37 @@ export default function TicketDetailPage() {
       }
     } catch (error) {
       console.error('Erreur changement statut:', error);
+    }
+  };
+
+  //Assigner/Désassigner un membre
+  const handleToggleAssignment = async (memberId) => {
+    try {
+      const currentAssignedIds = ticket.assignedTo?.map(a => a._id) || [];
+      let newAssignedIds;
+
+      if (currentAssignedIds.includes(memberId)) {
+        // Retirer l'assignation
+        newAssignedIds = currentAssignedIds.filter(id => id !== memberId);
+      } else {
+        // Ajouter l'assignation
+        newAssignedIds = [...currentAssignedIds, memberId];
+      }
+
+      const response = await fetchWithAuth(`/api/tickets/${ticketId}`, {
+        method: 'PUT',
+        body: JSON.stringify({ assignedTo: newAssignedIds })
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        loadData();
+      } else {
+        alert(data.message || 'Erreur lors de l\'assignation');
+      }
+    } catch (error) {
+      console.error('Erreur assignation:', error);
+      alert('Erreur lors de l\'assignation');
     }
   };
 
@@ -218,7 +247,7 @@ export default function TicketDetailPage() {
                   <span>👤</span>
                   <span>Créé par {ticket.creator.firstName} {ticket.creator.lastName}</span>
                 </div>
-                <div className="flex items-center gap-2 text-gray-900">
+                <div className="flex items-center gap-2">
                   <span>📅</span>
                   <span>Date d'estimation: {formatDate(ticket.estimatedDate)}</span>
                 </div>
@@ -265,11 +294,20 @@ export default function TicketDetailPage() {
               </button>
             </div>
 
-            {/* Assignations */}
+            {/*Assignations */}
             <div className="bg-white rounded-xl shadow p-6">
-              <h3 className="font-bold text-gray-900 mb-4">
-                Assigné à ({ticket.assignedTo?.length || 0})
-              </h3>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-bold text-gray-900">
+                  Assigné à ({ticket.assignedTo?.length || 0})
+                </h3>
+                <button
+                  onClick={() => setShowAssignModal(true)}
+                  className="px-3 py-1 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition text-sm"
+                >
+                  Gérer
+                </button>
+              </div>
+              
               {ticket.assignedTo && ticket.assignedTo.length > 0 ? (
                 <div className="space-y-2">
                   {ticket.assignedTo.map(person => (
@@ -277,17 +315,19 @@ export default function TicketDetailPage() {
                       <div className="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center text-white font-semibold">
                         {person.firstName[0]}{person.lastName[0]}
                       </div>
-                      <div>
-                        <p className="font-medium text-gray-900">
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium text-gray-900 truncate">
                           {person.firstName} {person.lastName}
                         </p>
-                        <p className="text-sm text-gray-600">{person.email}</p>
+                        <p className="text-sm text-gray-600 truncate">{person.email}</p>
                       </div>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p className="text-gray-500 text-sm">Non assigné</p>
+                <p className="text-gray-500 text-sm text-center py-4">
+                  Non assigné
+                </p>
               )}
             </div>
           </div>
@@ -374,6 +414,81 @@ export default function TicketDetailPage() {
             </button>
           </div>
         </form>
+      </Modal>
+
+      {/*Modal Assignation */}
+      <Modal
+        isOpen={showAssignModal}
+        onClose={() => setShowAssignModal(false)}
+        title="Gérer les assignations"
+      >
+        <div className="space-y-3">
+          {projectMembers.length === 0 ? (
+            <p className="text-gray-500 text-center py-8">
+              Aucun membre dans ce projet
+            </p>
+          ) : (
+            projectMembers.map((member) => {
+              const isAssigned = ticket.assignedTo?.some(a => a._id === member._id);
+              
+              return (
+                <div
+                  key={member._id}
+                  onClick={() => handleToggleAssignment(member._id)}
+                  className={`flex items-center gap-3 p-4 rounded-lg cursor-pointer transition ${
+                    isAssigned
+                      ? 'bg-indigo-50 border-2 border-indigo-500'
+                      : 'bg-gray-50 border-2 border-transparent hover:border-gray-300'
+                  }`}
+                >
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold ${
+                    isAssigned ? 'bg-indigo-600' : 'bg-gray-400'
+                  }`}>
+                    {member.firstName[0]}{member.lastName[0]}
+                  </div>
+                  
+                  <div className="flex-1 min-w-0">
+                    <p className="font-medium text-gray-900">
+                      {member.firstName} {member.lastName}
+                      {member.role === 'owner' && (
+                        <span className="ml-2 text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded">
+                          Propriétaire
+                        </span>
+                      )}
+                      {member.role === 'administrator' && (
+                        <span className="ml-2 text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">
+                          Admin
+                        </span>
+                      )}
+                    </p>
+                    <p className="text-sm text-gray-600 truncate">{member.email}</p>
+                  </div>
+
+                  <div className="flex-shrink-0">
+                    {isAssigned ? (
+                      <div className="w-6 h-6 bg-indigo-600 rounded-full flex items-center justify-center">
+                        <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                      </div>
+                    ) : (
+                      <div className="w-6 h-6 border-2 border-gray-300 rounded-full"></div>
+                    )}
+                  </div>
+                </div>
+              );
+            })
+          )}
+        </div>
+
+        <div className="mt-6">
+          <button
+            onClick={() => setShowAssignModal(false)}
+            className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700 transition"
+          >
+            Terminer
+          </button>
+        </div>
       </Modal>
     </div>
   );
